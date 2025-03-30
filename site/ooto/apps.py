@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class RandomtoolsConfig(AppConfig):
+class OotoConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "randomtools"
+    name = "ooto"
