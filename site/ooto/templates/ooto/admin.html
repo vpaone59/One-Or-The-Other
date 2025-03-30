@@ -1,0 +1,153 @@
+{% extends "ooto/layout.html" %}
+
+{% block title %}OOTO Admin{% endblock %}
+
+{% block content %}
+<div class="container text-light py-4">
+    <h1>OOTO Admin</h1>
+
+    <!-- Tabs for different admin sections -->
+    <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="choices-tab" data-bs-toggle="tab" data-bs-target="#choices"
+                type="button" role="tab" aria-controls="choices" aria-selected="true">Manage Choices</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="games-tab" data-bs-toggle="tab" data-bs-target="#games" type="button"
+                role="tab" aria-controls="games" aria-selected="false">Manage Games</button>
+        </li>
+    </ul>
+
+    <!-- Tab content -->
+    <div class="tab-content" id="adminTabsContent">
+        <!-- Choices Tab -->
+        <div class="tab-pane fade show active" id="choices" role="tabpanel" aria-labelledby="choices-tab">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header">
+                    <h2 class="h3">Add New Choice</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'admin_add_choice' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="choiceDescription" class="form-label">Choice Description</label>
+                            <input type="text" class="form-control" id="choiceDescription" name="description" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Choice</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card bg-dark border-secondary">
+                <div class="card-header">
+                    <h2 class="h3">Existing Choices</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Description</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for choice in choices %}
+                                <tr>
+                                    <td>{{ choice.id }}</td>
+                                    <td>{{ choice.description }}</td>
+                                    <td>{{ choice.datetime_created|date:"l, M d, y H:i T" }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'admin_delete_choice' choice.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center">No choices available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Games Tab -->
+        <div class="tab-pane fade" id="games" role="tabpanel" aria-labelledby="games-tab">
+            <div class="card bg-dark border-secondary mb-4">
+                <div class="card-header">
+                    <h2 class="h3">Create New Game</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'admin_add_game' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="firstChoice" class="form-label">First Choice</label>
+                            <select class="form-select" id="firstChoice" name="first_choice" required>
+                                <option value="" selected disabled>Select First Choice</option>
+                                {% for choice in choices %}
+                                <option value="{{ choice.id }}">{{ choice.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="secondChoice" class="form-label">Second Choice</label>
+                            <select class="form-select" id="secondChoice" name="second_choice" required>
+                                <option value="" selected disabled>Select Second Choice</option>
+                                {% for choice in choices %}
+                                <option value="{{ choice.id }}">{{ choice.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gameDate" class="form-label">Game Date</label>
+                            <input type="date" class="form-control" id="gameDate" name="game_date" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Game</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card bg-dark border-secondary">
+                <div class="card-header">
+                    <h2 class="h3">Existing Games</h2>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Choice</th>
+                                    <th>Second Choice</th>
+                                    <th>Game Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for game in games %}
+                                <tr>
+                                    <td>{{ game.id }}</td>
+                                    <td>{{ game.first_choice.description }}</td>
+                                    <td>{{ game.second_choice.description }}</td>
+                                    <td>{{ game.game_date|date:"Y-m-d" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No games available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
