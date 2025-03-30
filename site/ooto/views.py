@@ -3,7 +3,9 @@ from datetime import date
 from django.shortcuts import render, redirect
 from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
-from .models import Choice, Game, UserChoice
+from .models.choice import Choice
+from .models.game import Game
+from .models.user_choice import UserChoice
 
 logger = logging.getLogger(__name__)
 
