@@ -1,0 +1,22 @@
+{% extends "ooto/layout.html" %}
+{% block content %}
+    <div class="container text-light ">
+        <h2>Today's Choices</h2>
+        <div class="container">
+            {% for game in games %}
+                <div class="row">
+                    <div class="col-6">
+                        <h3>
+                            <a href="{% url 'vote' game.id game.first_choice.id %}">Vote for {{ game.first_choice }}</a>
+                        </h3>
+                    </div>
+                    <div class="col-6">
+                        <h3>
+                            <a href="{% url 'vote' game.id game.second_choice.id %}">Vote for {{ game.second_choice }}</a>
+                        </h3>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
