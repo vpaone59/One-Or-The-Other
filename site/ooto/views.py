@@ -57,7 +57,17 @@ def game_view(request, game_id):
     """Render the game page with the game details."""
     try:
         game = Game.objects.get(id=game_id)
-        return render(request, "ooto/game.html", {"game": game})
+        user_choices = UserChoice.objects.filter(game_id=game).order_by(
+            "-datetime_created"
+        )
+        return render(
+            request,
+            "ooto/game.html",
+            {
+                "game": game,
+                "user_choices": user_choices,
+            },
+        )
     except Exception as e:
         logger.error(f"Error rendering game page: {e}")
         return HttpResponseServerError("Internal Server Error")
@@ -116,6 +126,7 @@ def admin_add_game(request):
     return redirect("admin")
 
 
+# @login_required
 def admin_delete_choice(request, choice_id):
     """Delete a choice."""
     if request.method == "POST":
