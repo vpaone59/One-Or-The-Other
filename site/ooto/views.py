@@ -79,7 +79,25 @@ def admin_view(request):
     try:
         choices = Choice.objects.all().order_by("-datetime_created")
         games = Game.objects.all().order_by("-game_date")
-        return render(request, "ooto/admin.html", {"choices": choices, "games": games})
+
+        # Get recently deleted choice from session if exists
+        recently_deleted_choice = None
+        if "recently_deleted_choice" in request.session:
+            choice_data = request.session["recently_deleted_choice"]
+            recently_deleted_choice = {
+                "id": choice_data.get("id"),
+                "description": choice_data.get("description"),
+            }
+
+        return render(
+            request,
+            "ooto/admin.html",
+            {
+                "choices": choices,
+                "games": games,
+                "recently_deleted_choice": recently_deleted_choice,
+            },
+        )
     except Exception as e:
         logger.error(f"Error rendering admin page: {e}")
         return HttpResponseServerError("Internal Server Error")
@@ -132,9 +150,37 @@ def admin_delete_choice(request, choice_id):
     if request.method == "POST":
         try:
             choice = Choice.objects.get(id=choice_id)
+
+            # Store choice data in session for potential undo
+            request.session["recently_deleted_choice"] = {
+                "id": choice.id,
+                "description": choice.description,
+            }
+
+            # Save the choice data to the session and delete the choice
             choice.delete()
+
             return redirect("admin")
         except Exception as e:
             logger.error(f"Error deleting choice: {e}")
             return HttpResponseServerError("Internal Server Error")
     return redirect("admin")
+
+
+# @login_required
+def admin_undo_delete_choice(request, choice_id):
+    """Undo a choice deletion."""
+    try:
+        if "recently_deleted_choice" in request.session:
+            choice_data = request.session["recently_deleted_choice"]
+
+            # Recreate the choice
+            Choice.objects.create(description=choice_data.get("description"))
+
+            # Clear the deleted choice from session
+            del request.session["recently_deleted_choice"]
+
+        return redirect("admin")
+    except Exception as e:
+        logger.error(f"Error undoing choice deletion: {e}")
+        return HttpResponseServerError("Internal Server Error")

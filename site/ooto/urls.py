@@ -8,6 +8,7 @@ from .views import (
     admin_add_choice,
     admin_add_game,
     admin_delete_choice,
+    admin_undo_delete_choice,
 )
 
 urlpatterns = [
@@ -22,5 +23,10 @@ urlpatterns = [
         "admin/delete-choice/<int:choice_id>/",
         admin_delete_choice,
         name="admin_delete_choice",
+    ),
+    path(
+        "admin/undo-delete-choice/<int:choice_id>/",
+        admin_undo_delete_choice,
+        name="admin_undo_delete_choice",
     ),
 ]
