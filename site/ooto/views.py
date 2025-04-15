@@ -16,7 +16,7 @@ def home_view(request):
         games = Game.objects.filter(game_date=date.today())
         return render(request, "ooto/home.html", {"games": games})
     except Exception as e:
-        logger.error(f"Error rendering home page: {e}")
+        logger.error("Error rendering home page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -39,7 +39,7 @@ def cast_vote(request, game_id, choice_id):
             )
         return redirect("history")
     except Exception as e:
-        logger.error(f"Error processing vote: {e}")
+        logger.error("Error processing vote: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -49,7 +49,7 @@ def history_view(request):
         all_games = Game.objects.all()
         return render(request, "ooto/history.html", {"all_games": all_games})
     except Exception as e:
-        logger.error(f"Error rendering history page: {e}")
+        logger.error("Error rendering history page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -69,7 +69,7 @@ def game_view(request, game_id):
             },
         )
     except Exception as e:
-        logger.error(f"Error rendering game page: {e}")
+        logger.error("Error rendering game page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -99,7 +99,7 @@ def admin_view(request):
             },
         )
     except Exception as e:
-        logger.error(f"Error rendering admin page: {e}")
+        logger.error("Error rendering admin page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -113,7 +113,7 @@ def admin_add_choice(request):
                 Choice.objects.create(description=description)
             return redirect("admin")
         except Exception as e:
-            logger.error(f"Error adding choice: {e}")
+            logger.error("Error adding choice: %s", e)
             return HttpResponseServerError("Internal Server Error")
     return redirect("admin")
 
@@ -139,7 +139,7 @@ def admin_add_game(request):
                     )
             return redirect("admin")
         except Exception as e:
-            logger.error(f"Error adding game: {e}")
+            logger.error("Error adding game: %s", e)
             return HttpResponseServerError("Internal Server Error")
     return redirect("admin")
 
@@ -162,7 +162,7 @@ def admin_delete_choice(request, choice_id):
 
             return redirect("admin")
         except Exception as e:
-            logger.error(f"Error deleting choice: {e}")
+            logger.error("Error deleting choice: %s", e)
             return HttpResponseServerError("Internal Server Error")
     return redirect("admin")
 
@@ -182,5 +182,5 @@ def admin_undo_delete_choice(request, choice_id):
 
         return redirect("admin")
     except Exception as e:
-        logger.error(f"Error undoing choice deletion: {e}")
+        logger.error("Error undoing choice deletion: %s", e)
         return HttpResponseServerError("Internal Server Error")
