@@ -61,7 +61,7 @@ def signup_handler(request):
         messages.error(request, "Username already exists.")
         return redirect("login")
     except Exception as e:
-        logger.error(f"Error creating user: {e}")
+        logger.error("Error creating user: %s", e)
         messages.error(request, "An error occurred. Please try again.")
         return redirect("login")
 
