@@ -20,34 +20,8 @@
     </head>
     <body id="main-body" class="bg-dark">
         <main id="main-content">
-            <div class="container" id="main-container">
-                <header>
-                    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                        <a class="navbar-brand" href="{% url 'home' %}">ooto</a>
-                        <button class="navbar-toggler"
-                                type="button"
-                                data-toggle="collapse"
-                                data-target="#navbarNav"
-                                aria-controls="navbarNav"
-                                aria-expanded="false"
-                                aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarNav">
-                            <ul class="navbar-nav me-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'history' %}">previous</a>
-                                </li>
-                            </ul>
-                            <ul class="navbar-nav ms-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{% url 'admin' %}">admin</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </header>
-            </div>
+            {% include 'ooto/header.html' %}
+            {% block content_header %}{% endblock %}
             {% block content %}{% endblock %}
         </main>
         {% block extra_js %}{% endblock %}

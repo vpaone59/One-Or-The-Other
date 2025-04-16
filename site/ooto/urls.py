@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import (
+from .views.views import (
     home_view,
     cast_vote,
     history_view,
@@ -10,6 +10,7 @@ from .views import (
     admin_delete_choice,
     admin_undo_delete_choice,
 )
+from .views.auth import login_view, logout_view
 
 urlpatterns = [
     path("", home_view, name="home"),
@@ -29,4 +30,6 @@ urlpatterns = [
         admin_undo_delete_choice,
         name="admin_undo_delete_choice",
     ),
+    path("login/", login_view, name="login"),
+    path("logout/", logout_view, name="logout"),
 ]

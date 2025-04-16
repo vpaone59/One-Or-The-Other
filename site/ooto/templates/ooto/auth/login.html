@@ -1,0 +1,111 @@
+{% extends "ooto/layout.html" %}
+{% block title %}Login - OOTO{% endblock %}
+{% block content %}
+    <div class="container text-light py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card bg-dark border-secondary">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active"
+                                        id="login-tab"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#login-pane"
+                                        type="button"
+                                        role="tab"
+                                        aria-selected="true">Login</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link"
+                                        id="signup-tab"
+                                        data-bs-toggle="tab"
+                                        data-bs-target="#signup-pane"
+                                        type="button"
+                                        role="tab"
+                                        aria-selected="false">Sign Up</button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        {% if messages %}
+                            <div class="alert alert-info alert-dismissible fade show">
+                                {% for message in messages %}{{ message }}{% endfor %}
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                        {% endif %}
+                        <div class="tab-content">
+                            <!-- Login Form -->
+                            <div class="tab-pane fade show active"
+                                 id="login-pane"
+                                 role="tabpanel"
+                                 aria-labelledby="login-tab">
+                                <form method="post" action="{% url 'login' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ next }}">
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="username"
+                                               name="username"
+                                               required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input type="password"
+                                               class="form-control"
+                                               id="password"
+                                               name="password"
+                                               required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Login</button>
+                                </form>
+                            </div>
+                            <!-- Signup Form -->
+                            <div class="tab-pane fade"
+                                 id="signup-pane"
+                                 role="tabpanel"
+                                 aria-labelledby="signup-tab">
+                                <form method="post" action="{% url 'login' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ next }}">
+                                    <input type="hidden" name="signup" value="true">
+                                    <div class="mb-3">
+                                        <label for="signup-username" class="form-label">Username</label>
+                                        <input type="text"
+                                               class="form-control"
+                                               id="signup-username"
+                                               name="username"
+                                               required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="signup-password" class="form-label">Password</label>
+                                        <input type="password"
+                                               class="form-control"
+                                               id="signup-password"
+                                               name="password"
+                                               required>
+                                        <small class="form-text text-muted">Must be at least 8 characters</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="confirm-password" class="form-label">Confirm Password</label>
+                                        <input type="password"
+                                               class="form-control"
+                                               id="confirm-password"
+                                               name="confirm_password"
+                                               required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Create Account</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
