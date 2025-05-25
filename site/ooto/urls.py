@@ -1,4 +1,5 @@
 from django.urls import path
+from ooto.auth import login_view, logout_view
 from .views.views import (
     home_view,
     cast_vote,
@@ -10,7 +11,6 @@ from .views.views import (
     admin_delete_choice,
     admin_undo_delete_choice,
 )
-from .views.auth import login_view, logout_view
 
 urlpatterns = [
     path("", home_view, name="home"),
