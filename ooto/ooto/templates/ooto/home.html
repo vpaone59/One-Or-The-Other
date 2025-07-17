@@ -1,0 +1,24 @@
+{% extends "ooto/layout.html" %}
+{% block content %}
+    <div class="container text-light mt-2">
+        <h1 class="h2 text-center">Today's Choices</h1>
+        <div class="container">
+            {% for game in games %}
+                <div class="row">
+                    <div class="col-6 text-center">
+                        <button class="btn btn-primary" type="button">
+                            <a class="text-light"
+                               href="{% url 'vote' game.id game.first_choice.id %}">Vote for {{ game.first_choice }}</a>
+                        </button>
+                    </div>
+                    <div class="col-6 text-center">
+                        <button class="btn btn-secondary" type="button">
+                            <a class="text-light"
+                               href="{% url 'vote' game.id game.second_choice.id %}">Vote for {{ game.second_choice }}</a>
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

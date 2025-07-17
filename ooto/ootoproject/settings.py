@@ -54,7 +54,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "ooto_project.urls"
+ROOT_URLCONF = "ootoproject.urls"
 
 TEMPLATES = [
     {
@@ -72,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "ooto_project.wsgi.application"
+WSGI_APPLICATION = "ootoproject.wsgi.application"
 
 
 # Database

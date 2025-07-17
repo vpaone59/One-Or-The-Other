@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import (
+from ooto.auth import login_view, logout_view
+from .views.views import (
     home_view,
     cast_vote,
     history_view,
@@ -8,6 +9,7 @@ from .views import (
     admin_add_choice,
     admin_add_game,
     admin_delete_choice,
+    admin_undo_delete_choice,
 )
 
 urlpatterns = [
@@ -23,4 +25,11 @@ urlpatterns = [
         admin_delete_choice,
         name="admin_delete_choice",
     ),
+    path(
+        "admin/undo-delete-choice/<int:choice_id>/",
+        admin_undo_delete_choice,
+        name="admin_undo_delete_choice",
+    ),
+    path("login/", login_view, name="login"),
+    path("logout/", logout_view, name="logout"),
 ]

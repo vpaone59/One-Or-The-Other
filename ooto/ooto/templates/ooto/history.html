@@ -1,0 +1,26 @@
+{% extends "ooto/layout.html" %}
+{% block content %}
+    <div class="container text-light">
+        <div class="container">
+            <h2>History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Matchup</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for game in all_games %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'game' game.id %}">{{ game.first_choice }} vs {{ game.second_choice }}</a>
+                            </td>
+                            <td>{{ game.game_date }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -3,6 +3,18 @@
 {% block content %}
     <div class="container text-light py-4">
         <h1>OOTO Admin</h1>
+        <!-- Display undo message if a choice was recently deleted -->
+        {% if recently_deleted_choice %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Choice "{{ recently_deleted_choice.description }}" was deleted.</strong>
+                <a href="{% url 'admin_undo_delete_choice' recently_deleted_choice.id %}"
+                   class="ms-2">Click to undo</a>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endif %}
         <!-- Tabs for different admin sections -->
         <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -82,7 +94,7 @@
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="3" class="text-center">No choices available</td>
+                                            <td colspan="4" class="text-center">No choices available</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
@@ -96,6 +108,7 @@
                  id="games"
                  role="tabpanel"
                  aria-labelledby="games-tab">
+                <!-- Games content unchanged -->
                 <div class="card bg-dark border-secondary mb-4">
                     <div class="card-header">
                         <h2 class="h3">Create New Game</h2>

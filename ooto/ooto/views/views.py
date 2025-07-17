@@ -3,9 +3,7 @@ from datetime import date
 from django.shortcuts import render, redirect
 from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
-from .models.choice import Choice
-from .models.game import Game
-from .models.user_choice import UserChoice
+from ooto.models import Choice, Game, UserChoice
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +14,7 @@ def home_view(request):
         games = Game.objects.filter(game_date=date.today())
         return render(request, "ooto/home.html", {"games": games})
     except Exception as e:
-        logger.error(f"Error rendering home page: {e}")
+        logger.error("Error rendering home page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -39,7 +37,7 @@ def cast_vote(request, game_id, choice_id):
             )
         return redirect("history")
     except Exception as e:
-        logger.error(f"Error processing vote: {e}")
+        logger.error("Error processing vote: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -49,7 +47,7 @@ def history_view(request):
         all_games = Game.objects.all()
         return render(request, "ooto/history.html", {"all_games": all_games})
     except Exception as e:
-        logger.error(f"Error rendering history page: {e}")
+        logger.error("Error rendering history page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -69,7 +67,7 @@ def game_view(request, game_id):
             },
         )
     except Exception as e:
-        logger.error(f"Error rendering game page: {e}")
+        logger.error("Error rendering game page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -79,9 +77,27 @@ def admin_view(request):
     try:
         choices = Choice.objects.all().order_by("-datetime_created")
         games = Game.objects.all().order_by("-game_date")
-        return render(request, "ooto/admin.html", {"choices": choices, "games": games})
+
+        # Get recently deleted choice from session if exists
+        recently_deleted_choice = None
+        if "recently_deleted_choice" in request.session:
+            choice_data = request.session["recently_deleted_choice"]
+            recently_deleted_choice = {
+                "id": choice_data.get("id"),
+                "description": choice_data.get("description"),
+            }
+
+        return render(
+            request,
+            "ooto/admin.html",
+            {
+                "choices": choices,
+                "games": games,
+                "recently_deleted_choice": recently_deleted_choice,
+            },
+        )
     except Exception as e:
-        logger.error(f"Error rendering admin page: {e}")
+        logger.error("Error rendering admin page: %s", e)
         return HttpResponseServerError("Internal Server Error")
 
 
@@ -95,7 +111,7 @@ def admin_add_choice(request):
                 Choice.objects.create(description=description)
             return redirect("admin")
         except Exception as e:
-            logger.error(f"Error adding choice: {e}")
+            logger.error("Error adding choice: %s", e)
             return HttpResponseServerError("Internal Server Error")
     return redirect("admin")
 
@@ -121,7 +137,7 @@ def admin_add_game(request):
                     )
             return redirect("admin")
         except Exception as e:
-            logger.error(f"Error adding game: {e}")
+            logger.error("Error adding game: %s", e)
             return HttpResponseServerError("Internal Server Error")
     return redirect("admin")
 
@@ -132,9 +148,37 @@ def admin_delete_choice(request, choice_id):
     if request.method == "POST":
         try:
             choice = Choice.objects.get(id=choice_id)
+
+            # Store choice data in session for potential undo
+            request.session["recently_deleted_choice"] = {
+                "id": choice.id,
+                "description": choice.description,
+            }
+
+            # Save the choice data to the session and delete the choice
             choice.delete()
+
             return redirect("admin")
         except Exception as e:
-            logger.error(f"Error deleting choice: {e}")
+            logger.error("Error deleting choice: %s", e)
             return HttpResponseServerError("Internal Server Error")
     return redirect("admin")
+
+
+# @login_required
+def admin_undo_delete_choice(request, choice_id):
+    """Undo a choice deletion."""
+    try:
+        if "recently_deleted_choice" in request.session:
+            choice_data = request.session["recently_deleted_choice"]
+
+            # Recreate the choice
+            Choice.objects.create(description=choice_data.get("description"))
+
+            # Clear the deleted choice from session
+            del request.session["recently_deleted_choice"]
+
+        return redirect("admin")
+    except Exception as e:
+        logger.error("Error undoing choice deletion: %s", e)
+        return HttpResponseServerError("Internal Server Error")
